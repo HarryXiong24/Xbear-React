@@ -1,7 +1,7 @@
 {
-  "name": "typescript-webpack-start",
+  "name": "xbear-react",
   "version": "1.0.0",
-  "description": "A template for quickly developing projects with Typescript and Webpack.",
+  "description": "A project imitated React 16.8+.",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server",
