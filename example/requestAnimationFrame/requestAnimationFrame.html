@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>requestAnimationFrame</title>
+  </head>
+
+  <body>
+    <div
+      id="progress-bar"
+      style="background: lightblue; width: 0px; height: 20px"
+    ></div>
+    <button id="btn">开始</button>
+    <script type="text/javascript">
+      // requestAnimationFrame 的用法 页面上绘制一个进度条 值0%=>100%
+      const btn = document.getElementById('btn');
+      const div = document.getElementById('progress-bar');
+      let start;
+      function progress() {
+        div.style.width = div.offsetWidth + 1 + 'px';
+        div.innerHTML = div.offsetWidth + '%'; // 修改文本为百分比
+        if (div.offsetWidth < 100) {
+          const current = Date.now();
+          // 假如说浏览器本身的任务执行是 5MS
+          console.log(current - start); // 打印的是开始准备执行的时候到真正执行的时间的时间差
+          start = current;
+          requestAnimationFrame(progress);
+        }
+      }
+      btn.addEventListener('click', () => {
+        div.style.width = 0; // 先把宽度清除 rAf 后面会用到
+        const current = Date.now(); // 先获取到当前的时间 current 是毫秒数
+        start = current;
+        requestAnimationFrame(progress);
+      });
+    </script>
+  </body>
+</html>

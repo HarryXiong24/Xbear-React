@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>requestIdleCallback</title>
+  </head>
+
+  <body>
+    <script>
+      /**
+       * window.requestIdleCallback(callback, { timeout: 1000 });
+       * 这是一个全局属性
+       * 作为用户告诉浏览器，我现在执行callback函数
+       * 但是它的优先级比较低告诉浏览器可以空闲的时候执行callback
+       * 但是到了这个超时时间了，就必须马上执行
+       */
+
+      // 在JS里如何实现睡眠的功能
+      function sleep(delay) {
+        // start 当前时间
+        for (let start = Date.now(); Date.now() - start <= delay; ) {}
+      }
+
+      let allStart = Date.now();
+      // fiber 是把整个任务分成很多个小任务，每次执行一个任务
+      // 执行完成后会看看有没剩余时间，如果有继续下一个任务，如果没有放弃执行，交给浏览器进行调度
+      const works = [
+        () => {
+          console.log('第1个任务开始');
+          // 一帧 16.6ms 因为此任务的执行时间已经超过了16.6毫秒，所需要把控制权交给浏览器
+          sleep(20);
+          console.log('第1个任务结束 ');
+        },
+        () => {
+          console.log('第2个任务开始');
+          sleep(20);
+          console.log('第2个任务结束 ');
+        },
+        () => {
+          console.log('第3个任务开始');
+          sleep(20);
+          console.log('第3个任务结束 ');
+          console.log(Date.now() - allStart);
+        },
+      ];
+
+      // 每次执行一个 works 里的任务
+      function performUnitOfWork() {
+        works.shift()();
+      }
+
+      // deadline是一个对象，有两个属性
+      // timeRemaining() 可以返回此帧还剩下多少时间供用户使用
+      // didTimeout 此 callback 任务是否超时
+      function workLoop(deadline) {
+        console.log(`本帧的剩余时间为${parseInt(deadline.timeRemaining())}`);
+        // 如果此帧的剩余时间超过 0, 或者此时已经超时了
+        while (
+          (deadline.timeRemaining() > 0 || deadline.didTimeout) &&
+          works.length > 0
+        ) {
+          performUnitOfWork();
+        } // 如果说没有剩余时间了，就需要放弃执行任务控制权，执行权交还给浏览器
+
+        if (works.length > 0) {
+          // 说明还有未完成的任务，递归执行
+          window.requestIdleCallback(workLoop, { timeout: 1000 });
+        }
+      }
+
+      // 告诉浏览器在 1000 毫秒后，即使你没有空闲时间也得帮我执行
+      requestIdleCallback(workLoop, { timeout: 1000 });
+    </script>
+  </body>
+</html>

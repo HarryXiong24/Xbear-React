@@ -21,5 +21,5 @@
     }
   },
   "exclude": ["node_modules", "dist", "dist-ssr", "public"],
-  "include": ["example", "src", "test"]
+  "include": ["example/**/*.ts", "src/**/*.ts", "test/**/*.ts"]
 }
