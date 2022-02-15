@@ -1,3 +1,3 @@
-import test from '../src/index';
+import fiber from './fiber/fiber';
 
-test();
+fiber();
