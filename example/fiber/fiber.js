@@ -1,7 +1,6 @@
 /**
  * 1.从顶点开始遍历
  * 2.如果有大儿子，先遍历大儿子
- *
  */
 function sleep(delay) {
   //d=50//
@@ -22,7 +21,8 @@ C1.sibling = C2;
 let nextUnitOfWork = null; //下一个执行单元
 let startTime = Date.now();
 function workLoop(deadline) {
-  //while (nextUnitOfWork) {//如果有待执行的执行单元，就执行，然后会返回下一个执行单元
+  // while (nextUnitOfWork) {
+  //如果有待执行的执行单元，就执行，然后会返回下一个执行单元
   while (
     (deadline.timeRemaining() > 1 || deadline.didTimeout) &&
     nextUnitOfWork

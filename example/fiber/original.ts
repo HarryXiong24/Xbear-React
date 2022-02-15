@@ -19,13 +19,14 @@ const root = {
     },
   ],
 };
-function walk(vdom) {
+function walk(vdom: any) {
   doWork(vdom);
-  vdom.children.forEach((child) => {
+  vdom.children.forEach((child: any) => {
     walk(child);
   });
 }
-function doWork(vdom) {
+function doWork(vdom: any) {
   console.log(vdom.key);
 }
+
 walk(root);
