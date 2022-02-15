@@ -1,3 +1,3 @@
-import fiber from './fiber/fiber';
+import fiberIdle from './fiber';
 
-fiber();
+fiberIdle();

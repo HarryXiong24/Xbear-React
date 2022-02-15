@@ -1,11 +1,17 @@
+/**
+ * fiber 遍历规则
+ * 开始：先儿子，再弟弟，之后叔叔
+ * 结束：自己没有儿子节点后视为结束
+ */
+
 import root, { vDOM } from './vDom';
 
 function beginWork(fiber: vDOM) {
-  console.log(`此fiber为${fiber.key}.`);
+  console.log(`fiber ${fiber.key} 已开始.`);
 }
 
 function completeUnitOfWork(fiber: vDOM) {
-  console.log(`fiber ${fiber.key}已完成.`);
+  console.log(`fiber ${fiber.key} 已完成.`);
 }
 
 function performUnitOfWork(fiber: vDOM) {
