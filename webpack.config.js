@@ -25,32 +25,24 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.(ts|tsx)$/,
+        exclude: /(node_modules|bower_components)/,
         loader: 'babel-loader',
         options: {
           presets: [
+            '@babel/preset-react',
             '@babel/preset-env',
             [
               '@babel/preset-typescript',
               {
                 allExtensions: true,
+                isTSX: true,
               },
             ],
           ],
-        },
-      },
-      {
-        test: /\.tsx?$/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            '@babel/preset-env',
-            [
-              '@babel/preset-typescript',
-              {
-                allExtensions: true,
-              },
-            ],
+          plugins: [
+            '@babel/plugin-transform-runtime',
+            '@babel/plugin-proposal-class-properties',
           ],
         },
       },

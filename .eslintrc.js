@@ -14,6 +14,8 @@ module.exports = {
     'plugin:import/recommended',
     // ts 支持
     'plugin:import/typescript',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
     // plugin:prettier/recommended 需要为最后一个扩展
     'plugin:prettier/recommended',
@@ -31,6 +33,8 @@ module.exports = {
     'require-yield': 'warn', // 不允许 generate 函数中没有 yield
     'import/no-named-as-default': 'off',
     'import/no-named-as-default-member': 'off',
+    // react
+    'react/self-closing-comp': 'error',
     // click element muse have keyboard events
     'jsx-a11y/click-events-have-key-events': 'off',
     // click element must have a role property
@@ -65,8 +69,6 @@ module.exports = {
         tsconfigRootDir: __dirname,
         ecmaFeatures: {
           jsx: true,
-          typescript: true,
-          tsx: true,
         },
         project: ['./tsconfig.json'],
       },

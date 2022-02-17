@@ -14,6 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "noImplicitAny": false,
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
@@ -21,5 +22,12 @@
     }
   },
   "exclude": ["node_modules", "dist", "dist-ssr", "public"],
-  "include": ["example/**/*.ts", "src/**/*.ts", "test/**/*.ts"]
+  "include": [
+    "example/**/*.ts",
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "example/**/*.tsx",
+    "src/**/*.tsx",
+    "test/**/*.tsx"
+  ]
 }
