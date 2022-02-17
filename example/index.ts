@@ -3,5 +3,6 @@
 // fiberIdle();
 
 // 测试 babel 和 createElement
-import { element } from './demo';
+import { element, tsx_parse_by_babel } from './createElement';
 console.log(element);
+console.log(tsx_parse_by_babel);

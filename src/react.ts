@@ -1,4 +1,4 @@
-import { ELEMENT_TEXT } from './constant';
+import { ELEMENT_TEXT } from './constants';
 
 /**
  * 创建元素（虚拟DOM）的方法
@@ -18,17 +18,16 @@ import { ELEMENT_TEXT } from './constant';
  */
 function createElement(
   type: string,
-  config: Record<string, any>,
-  ...children: Record<string, any>[]
+  config: Record<string, any> | null,
+  ...children: Record<string, any>[] | string[]
 ) {
   return {
     type,
     props: {
       ...config, // 属性扩展 id，key
-      children: children.map((child) => {
+      children: children.map((child: Record<string, any> | string) => {
         // 兼容处理，如果是react元素返回自己，如果是文本类型，如果是一个字符串的话，返回元素对象
-        // 比方说 B1 文本那么就是 ["B1文本"] 改为了
-        // { type: Symbol(ELEMENT_TEXT), props: {text: "B1文本", children: []}}
+        // 比方说 'B1' 那么改为了 { type: Symbol(ELEMENT_TEXT), props: {text: "B1文本", children: []}}
         return typeof child === 'object'
           ? child
           : {
