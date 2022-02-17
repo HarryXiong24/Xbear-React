@@ -3,6 +3,7 @@
  * 之前完成任务之后，是如何遍历子节点，这种遍历是递归调用，执行栈会越来越深
  * 而且不能中断，因为中断后再想恢复就非常难了
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const root = {
   key: 'A1',
   children: [
@@ -19,6 +20,7 @@ const root = {
     },
   ],
 };
+
 function doWork(vdom: any) {
   console.log(vdom.key);
 }
