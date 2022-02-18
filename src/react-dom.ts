@@ -1,13 +1,13 @@
 import { TAG_ROOT } from './constants';
-import { scheduleRoot } from './schedule';
-import { RootFiber } from './types';
+import { scheduleRoot } from './schedule/schedule';
+import { Fiber } from './types';
 /**
  * render 是要把一个元素渲染到一个容器内部
  * @param {*} element 元素
  * @param {*} container 容器
  */
 function render(element: any, container: HTMLElement) {
-  const rootFiber: RootFiber = {
+  const rootFiber: Fiber = {
     // 每个 fiber 会有一个 tag 标示此元素类型
     tag: TAG_ROOT,
     // 一般情况下如果这个元素是一个原生节点的话，stateNode 指向真实 DOM 元素
