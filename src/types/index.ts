@@ -22,9 +22,9 @@ export type UPDATE = typeof UPDATE;
 
 export interface Fiber {
   tag: symbol;
-  stateNode?: HTMLElement | null;
+  stateNode?: HTMLElement | Text | null;
   props: Record<string, any> | null;
-  type?: string | ELEMENT_TEXT;
+  type?: string | ELEMENT_TEXT | keyof HTMLElementTagNameMap;
   child?: Fiber | null;
   sibling?: Fiber | null;
   return?: Fiber | null;
