@@ -1,8 +1,6 @@
 import { TAG_HOST, TAG_ROOT, TAG_TEXT } from '../constants';
 import { Fiber } from '../types';
-import updateHost from './updateHost';
-import updateHostRoot from './updateHostRoot';
-import updateHostText from './updateHostText';
+import { updateHost, updateHostRoot, updateHostText } from './update';
 
 /**
  * 从根节点开始渲染和调度
@@ -54,10 +52,13 @@ function performUnitOfWork(currentFiber: Fiber): Fiber | undefined {
  */
 function beginWork(currentFiber: Fiber) {
   if (currentFiber.tag === TAG_ROOT) {
+    // 如果是根 Fiber
     updateHostRoot(currentFiber);
   } else if (currentFiber.tag === TAG_TEXT) {
+    // 如果是文本 Fiber
     updateHostText(currentFiber);
   } else if (currentFiber.tag === TAG_HOST) {
+    // 如果是原生非文本 Fiber
     updateHost(currentFiber);
   }
 }
@@ -98,7 +99,8 @@ function workLoop(IdleDeadline: any) {
   // 是否要让出时间片控制权
   let shouldYield = false;
   while (!shouldYield && nextUnitOfWork) {
-    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork)!;
+    // IdleDeadline.timeRemaining() < 1 则让出时间片控制权
     shouldYield = IdleDeadline.timeRemaining() < 1;
   }
   if (!nextUnitOfWork) {

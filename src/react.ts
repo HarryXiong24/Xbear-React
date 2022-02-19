@@ -16,10 +16,11 @@ import { ELEMENT_TEXT } from './constants';
         id: "B2"
     }));
  */
+
 function createElement(
   type: string,
   config: Record<string, any> | null,
-  ...children: Record<string, any>[] | string[]
+  ...children: (Record<string, any> | string)[]
 ) {
   return {
     type,
