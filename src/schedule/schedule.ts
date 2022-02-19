@@ -26,7 +26,7 @@ export function scheduleRoot(rootFiber: Fiber) {
   nextUnitOfWork = rootFiber;
 }
 
-function performUnitOfWork(currentFiber: Fiber): Fiber {
+function performUnitOfWork(currentFiber: Fiber): Fiber | undefined {
   beginWork(currentFiber);
   // 然后再遍历
   if (currentFiber.child) {
@@ -59,6 +59,38 @@ function beginWork(currentFiber: Fiber) {
     updateHostText(currentFiber);
   } else if (currentFiber.tag === TAG_HOST) {
     updateHost(currentFiber);
+  }
+}
+
+/**
+ * 在完成时收集副作用组成 effect list
+ * 每个 fiber 有两个属性 firstEffect 指向第一个有副作用的子 fiber
+ * lastEffect 指向最后一个有副作用的子 fiber，中间用 nextEffect 做成单链表
+ * @param {*} currentFiber
+ */
+function completeUnitOfWork(currentFiber: Fiber) {
+  const returnFiber = currentFiber.return;
+  if (returnFiber) {
+    if (!returnFiber.firstEffect) {
+      returnFiber.firstEffect = currentFiber.firstEffect;
+    }
+    if (currentFiber.lastEffect) {
+      if (returnFiber.lastEffect) {
+        returnFiber.lastEffect.nextEffect = currentFiber.firstEffect;
+      }
+      returnFiber.lastEffect = currentFiber.lastEffect;
+    }
+
+    const effectTag = currentFiber.effectTag;
+    if (effectTag) {
+      // 如果有副作用，（第一次时肯定有，新增默认PLACEMENT）
+      if (returnFiber.lastEffect) {
+        returnFiber.lastEffect.nextEffect = currentFiber;
+      } else {
+        returnFiber.firstEffect = currentFiber;
+      }
+      returnFiber.lastEffect = currentFiber;
+    }
   }
 }
 

@@ -24,10 +24,12 @@ export interface Fiber {
   tag: symbol;
   stateNode?: HTMLElement | Text | null;
   props: Record<string, any> | null;
-  type?: string | ELEMENT_TEXT | keyof HTMLElementTagNameMap;
+  type?: string | ELEMENT_TEXT;
   child?: Fiber | null;
   sibling?: Fiber | null;
   return?: Fiber | null;
   effectTag?: PLACEMENT | DELETION | UPDATE;
   nextEffect?: Fiber | null;
+  firstEffect?: Fiber | null;
+  lastEffect?: Fiber | null;
 }
