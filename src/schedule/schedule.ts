@@ -87,8 +87,10 @@ function completeUnitOfWork(currentFiber: Fiber) {
     if (effectTag) {
       // 如果有副作用，（第一次时肯定有，新增默认PLACEMENT）
       if (returnFiber.lastEffect) {
+        // 让儿子的 nextEffect 的元素指向自己
         returnFiber.lastEffect.nextEffect = currentFiber;
       } else {
+        // 第一次的时候，父亲的 firstEffect 和 lastEffect 都指向第一个完成的儿子
         returnFiber.firstEffect = currentFiber;
       }
       returnFiber.lastEffect = currentFiber;
