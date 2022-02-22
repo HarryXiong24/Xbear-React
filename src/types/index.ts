@@ -51,7 +51,7 @@ export interface Fiber {
   sibling?: Fiber | null;
   return?: Fiber | null;
   // 收集副作用用到的标志
-  effectTag?: PLACEMENT_TYPE | DELETION_TYPE | UPDATE_TYPE;
+  effectTag?: PLACEMENT_TYPE | DELETION_TYPE | UPDATE_TYPE | null;
   nextEffect?: Fiber | null;
   firstEffect?: Fiber | null;
   lastEffect?: Fiber | null;

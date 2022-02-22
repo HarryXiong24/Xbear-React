@@ -1,4 +1,4 @@
-import { TAG_HOST, TAG_ROOT, TAG_TEXT } from '../constants';
+import { PLACEMENT, TAG_HOST, TAG_ROOT, TAG_TEXT } from '../constants';
 import { Fiber } from '../types';
 import { updateHost, updateHostRoot, updateHostText } from './update';
 
@@ -17,10 +17,10 @@ import { updateHost, updateHostRoot, updateHostText } from './update';
 // 下一个工作单元
 let nextUnitOfWork: Fiber | null = null;
 // 根 Fiber，方便我们随时找到根
-let workInProgress: Fiber | null = null;
+let workInProgressRoot: Fiber | null = null;
 
 export function scheduleRoot(rootFiber: Fiber) {
-  workInProgress = rootFiber;
+  workInProgressRoot = rootFiber;
   nextUnitOfWork = rootFiber;
 }
 
@@ -72,6 +72,7 @@ function beginWork(currentFiber: Fiber) {
 function completeUnitOfWork(currentFiber: Fiber) {
   const returnFiber = currentFiber.return;
   if (returnFiber) {
+    // 把自己儿子的 effect 链挂到父亲身上
     if (!returnFiber.firstEffect) {
       returnFiber.firstEffect = currentFiber.firstEffect;
     }
@@ -81,7 +82,7 @@ function completeUnitOfWork(currentFiber: Fiber) {
       }
       returnFiber.lastEffect = currentFiber.lastEffect;
     }
-
+    // 把自己的 effect 链挂到父亲身上
     const effectTag = currentFiber.effectTag;
     if (effectTag) {
       // 如果有副作用，（第一次时肯定有，新增默认PLACEMENT）
@@ -105,9 +106,32 @@ function workLoop(IdleDeadline: any) {
   }
   if (!nextUnitOfWork) {
     console.log('render 阶段结束');
+    commitRoot();
   }
   // 每一帧都要执行这个代码
   window.requestIdleCallback(workLoop, { timeout: 500 });
 }
 
-requestIdleCallback(workLoop, { timeout: 500 });
+function commitRoot() {
+  // 取出第一个结束的结点
+  let currentFiber = workInProgressRoot!.firstEffect;
+  while (currentFiber) {
+    // 依次提交
+    commitWork(currentFiber);
+    currentFiber = currentFiber.nextEffect;
+  }
+  workInProgressRoot = null;
+}
+
+function commitWork(currentFiber: Fiber) {
+  if (!currentFiber) return;
+  const returnFiber = currentFiber.return;
+  const returnDOM = returnFiber!.stateNode;
+  console.log(currentFiber);
+  if (currentFiber.effectTag === PLACEMENT) {
+    returnDOM!.appendChild(currentFiber.stateNode as Node);
+  }
+  currentFiber.effectTag = null;
+}
+
+window.requestIdleCallback(workLoop, { timeout: 500 });
