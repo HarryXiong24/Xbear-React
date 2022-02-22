@@ -104,7 +104,7 @@ function workLoop(IdleDeadline: any) {
     // IdleDeadline.timeRemaining() < 1 则让出时间片控制权
     shouldYield = IdleDeadline.timeRemaining() < 1;
   }
-  if (!nextUnitOfWork) {
+  if (!nextUnitOfWork && workInProgressRoot) {
     console.log('render 阶段结束');
     commitRoot();
   }

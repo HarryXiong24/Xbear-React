@@ -35,13 +35,13 @@ export interface Fiber {
   // 是原生节点还是 react 节点
   type?: string | ELEMENT_TEXT_TYPE;
   // 该节点下的属性，children
-  props: Props | null;
+  props?: Props | null;
 
   /**
    * Fiber 里的属性
    */
   // 标志符，区分不同的 fiber 类型
-  tag:
+  tag?:
     | TAG_ROOT_TYPE
     | TAG_HOST_TYPE
     | TAG_TEXT_TYPE
