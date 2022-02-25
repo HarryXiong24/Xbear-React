@@ -18,6 +18,8 @@ import { updateHost, updateHostRoot, updateHostText } from './update';
 let nextUnitOfWork: Fiber | null = null;
 // 根 Fiber，方便我们随时找到根
 let workInProgressRoot: Fiber | null = null;
+// 渲染成功后的当前根rootFiber
+let currentRoot: Fiber | null = null;
 
 export function scheduleRoot(rootFiber: Fiber) {
   workInProgressRoot = rootFiber;
@@ -122,6 +124,8 @@ function commitRoot() {
     commitWork(currentFiber);
     currentFiber = currentFiber.nextEffect;
   }
+  // 把当前渲染成功的根 fiber 赋给 currentRoot
+  currentRoot = workInProgressRoot;
   workInProgressRoot = null;
 }
 
