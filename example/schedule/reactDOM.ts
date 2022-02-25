@@ -1,6 +1,6 @@
-import { TAG_ROOT } from './constants';
-import { scheduleRoot } from './scheduler/schedule';
-import { Fiber } from './types';
+import { TAG_ROOT } from '@/constants';
+import { scheduleRoot } from './schedule';
+import { Fiber } from '@/types';
 /**
  * render 是要把一个元素渲染到一个容器内部
  * @param {*} element 元素

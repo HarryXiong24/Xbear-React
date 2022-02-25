@@ -8,6 +8,6 @@
 // console.log(tsx_parse_by_babel);
 
 // 测试 ReactDOM.render 函数
-import { Element } from './ReactDOM';
-import ReactDOM from '@/react-dom';
+import { Element } from './schedule/index';
+import ReactDOM from './schedule/reactDOM';
 ReactDOM.render(Element, document.getElementById('app')!);
