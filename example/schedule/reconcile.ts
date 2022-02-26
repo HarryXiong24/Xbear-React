@@ -1,6 +1,6 @@
 import { ELEMENT_TEXT, PLACEMENT, TAG_HOST, TAG_TEXT } from '@/constants';
 import { TAG_TEXT_TYPE, TAG_HOST_TYPE, Fiber, Props } from '@/types';
-import { setProps } from '@/utils/utils';
+import { setProps } from '@/utils/setProps';
 
 /**
  * 将 children 初始化成 Fiber

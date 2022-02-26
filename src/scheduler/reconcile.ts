@@ -1,6 +1,15 @@
-import { ELEMENT_TEXT, PLACEMENT, TAG_HOST, TAG_TEXT } from '@/constants';
+import {
+  DELETION,
+  ELEMENT_TEXT,
+  PLACEMENT,
+  TAG_HOST,
+  TAG_TEXT,
+  UPDATE,
+} from '@/constants';
 import { TAG_TEXT_TYPE, TAG_HOST_TYPE, Fiber, Props } from '@/types';
-import { setProps } from '@/utils/utils';
+import { UpdateQueue } from '@/utils/updateQueue';
+import { setProps } from '@/utils/setProps';
+import { deletions } from './schedule';
 
 /**
  * 将 children 初始化成 Fiber
@@ -12,26 +21,76 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
   let newChildIndex = 0;
   // 上一个新的子 fiber
   let prevSibling: Fiber | null = null;
+  // 如果说当前的 currentFiber 有 alternate 属性，并且 alternate 有 child 属性
+  let oldFiber: Fiber | null =
+    currentFiber.alternate! && currentFiber.alternate.child!;
+  if (oldFiber) {
+    oldFiber.firstEffect = oldFiber.lastEffect = oldFiber.nextEffect = null;
+  }
   // 遍历我们子虚拟 DOM 元素数组，为每一个虚拟 DOM 创建子 Fiber
   while (newChildIndex < newChildren.length) {
     // 取出虚拟 DOM 节点
     const newChild = newChildren[newChildIndex];
+    // 新的 Fiber
+    let newFiber: Fiber | null = null;
+    const sameType = oldFiber && newChild && oldFiber.type === newChild.type;
+
     let tag: TAG_TEXT_TYPE | TAG_HOST_TYPE = TAG_HOST;
-    if (newChild.type == ELEMENT_TEXT) {
+    if (newChild && newChild.type == ELEMENT_TEXT) {
       tag = TAG_TEXT;
-    } else if (typeof newChild.type === 'string') {
+    } else if (newChild && typeof newChild.type === 'string') {
       // 如果 type 是字符串，那么这是一个原生 DOM 节点
       tag = TAG_HOST;
     }
-    const newFiber: Fiber = {
-      tag,
-      type: newChild.type,
-      props: newChild.props,
-      stateNode: null, // 此时新节点还没有挂载的 DOM 元素
-      return: currentFiber, // 父 Fiber, returnFiber
-      effectTag: PLACEMENT, // 副作用标示，render 会收集副作用 增加 删除 更新
-      nextEffect: null, // effect list 是一个单链表，顺序和完成顺序一样，节点可能会少，因为只保存有 effectTag 的 Fiber
-    };
+
+    if (sameType) {
+      // 说明老 fiber 和新虚拟 DOM 类型一样，可以复用，更新即可
+      if (oldFiber.alternate) {
+        //至少已经更新一次了
+        newFiber = oldFiber.alternate;
+        newFiber.props = newChild.props;
+        newFiber.alternate = oldFiber;
+        newFiber.effectTag = UPDATE;
+        newFiber.updateQueue = oldFiber.updateQueue || new UpdateQueue();
+        newFiber.nextEffect = null;
+      } else {
+        newFiber = {
+          tag: oldFiber.tag,
+          type: oldFiber.type,
+          props: newChild.props, //一定要新的
+          stateNode: oldFiber.stateNode, //div还没有创建DOM元素
+          updateQueue: oldFiber.updateQueue || new UpdateQueue(),
+          return: currentFiber, //父Fiber returnFiber
+          alternate: oldFiber, //让新的fiber的alternate指向老的fiber
+          effectTag: UPDATE, //副作用标示，render会收集副作用 增加 删除 更新
+          nextEffect: null, //effect list也是一个单链表 顺序和完成顺序一样 节点可能会少
+        };
+      }
+    } else {
+      // 看看新的 DOM 节点可有 child（有可能是null）
+      if (newChild) {
+        newFiber = {
+          tag,
+          type: newChild.type,
+          props: newChild.props,
+          stateNode: null, // div还没有创建DOM元素
+          return: currentFiber, // 父Fiber returnFiber
+          updateQueue: new UpdateQueue(),
+          effectTag: PLACEMENT, // 副作用标示，render 会收集副作用 增加 删除 更新
+          nextEffect: null, // effect list也是一个单链表 顺序和完成顺序一样 节点可能会少
+        };
+      }
+
+      if (oldFiber) {
+        oldFiber.effectTag = DELETION;
+        deletions.push(oldFiber);
+      }
+    }
+
+    if (oldFiber) {
+      oldFiber = oldFiber.sibling!; // oldFiber 指针也向后移动一次,为了保持与下次对比
+    }
+
     // 每一个 fiber 与 currentFiber 建立联系
     if (newFiber) {
       if (newChildIndex === 0) {

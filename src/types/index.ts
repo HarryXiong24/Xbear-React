@@ -55,4 +55,6 @@ export interface Fiber {
   nextEffect?: Fiber | null;
   firstEffect?: Fiber | null;
   lastEffect?: Fiber | null;
+  alternate?: Fiber | null;
+  updateQueue?: any;
 }
