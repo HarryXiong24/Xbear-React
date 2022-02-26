@@ -2,11 +2,20 @@ import {
   DELETION,
   ELEMENT_TEXT,
   PLACEMENT,
+  TAG_CLASS,
+  TAG_FUNCTION_COMPONENT,
   TAG_HOST,
   TAG_TEXT,
   UPDATE,
 } from '@/constants';
-import { TAG_TEXT_TYPE, TAG_HOST_TYPE, Fiber, Props } from '@/types';
+import {
+  TAG_TEXT_TYPE,
+  TAG_HOST_TYPE,
+  Fiber,
+  Props,
+  TAG_FUNCTION_COMPONENT_TYPE,
+  TAG_CLASS_TYPE,
+} from '@/types';
 import { UpdateQueue } from '@/utils/updateQueue';
 import { setProps } from '@/utils/setProps';
 import { deletions } from './schedule';
@@ -35,12 +44,23 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
     let newFiber: Fiber | null = null;
     const sameType = oldFiber && newChild && oldFiber.type === newChild.type;
 
-    let tag: TAG_TEXT_TYPE | TAG_HOST_TYPE = TAG_HOST;
-    if (newChild && newChild.type == ELEMENT_TEXT) {
+    let tag:
+      | TAG_TEXT_TYPE
+      | TAG_HOST_TYPE
+      | TAG_FUNCTION_COMPONENT_TYPE
+      | TAG_CLASS_TYPE = TAG_HOST;
+    if (
+      newChild &&
+      typeof newChild.type == 'function' &&
+      (newChild.type as any).prototype.isReactComponent
+    ) {
+      tag = TAG_CLASS;
+    } else if (newChild && typeof newChild.type == 'function') {
+      tag = TAG_FUNCTION_COMPONENT;
+    } else if (newChild && newChild.type == ELEMENT_TEXT) {
       tag = TAG_TEXT;
     } else if (newChild && typeof newChild.type === 'string') {
-      // 如果 type 是字符串，那么这是一个原生 DOM 节点
-      tag = TAG_HOST;
+      tag = TAG_HOST; //如果type是字符串，那么这是一个原生DOM节点div
     }
 
     if (sameType) {
