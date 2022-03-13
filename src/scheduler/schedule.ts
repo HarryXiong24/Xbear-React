@@ -27,13 +27,19 @@ import { updateHost, updateHostRoot, updateHostText } from './update';
 export let nextUnitOfWork: Fiber | null = null;
 // 根 Fiber，方便我们随时找到根
 export let workInProgressRoot: Fiber | null = null;
-// 渲染成功后的当前根rootFiber
+// 渲染成功后的当前根 rootFiber
 export let currentRoot: Fiber | null = null;
-// 删除的节点不放在effect list 要单独记录并执行
+// 删除的节点不放在 effect list 要单独记录并执行
 export const deletions: Fiber[] = [];
 
 export function scheduleRoot(rootFiber: Fiber) {
-  workInProgressRoot = rootFiber;
+  // 说明已经渲染过一次了，此时就要拷贝一份为以后渲染做准备
+  if (currentRoot) {
+    rootFiber.alternate = currentRoot;
+    workInProgressRoot = rootFiber;
+  } else {
+    workInProgressRoot = rootFiber;
+  }
   nextUnitOfWork = rootFiber;
 }
 
@@ -133,7 +139,7 @@ function commitRoot() {
   // 取出第一个结束的结点
   let currentFiber = workInProgressRoot!.firstEffect;
   while (currentFiber) {
-    // 依次提交
+    // 依次提交, 通过循环把每一个字节点挂到父节点上并渲染
     commitWork(currentFiber);
     currentFiber = currentFiber.nextEffect;
   }
@@ -145,19 +151,22 @@ function commitRoot() {
 }
 
 function commitWork(currentFiber: Fiber) {
-  if (!currentFiber) return;
+  if (!currentFiber) {
+    return;
+  }
   const returnFiber = currentFiber.return;
-  const domReturn = returnFiber!.stateNode;
+  const returnDom = returnFiber!.stateNode;
   console.log(currentFiber);
-  // 处理新增节点
   if (currentFiber.effectTag === PLACEMENT) {
-    domReturn!.appendChild(currentFiber.stateNode as Node);
+    // 新增节点
+    returnDom!.appendChild(currentFiber.stateNode as Node);
   } else if (currentFiber.effectTag === DELETION) {
     // 删除节点
-    return commitDeletion(currentFiber, domReturn);
+    returnDom!.removeChild(currentFiber.stateNode as Node);
   } else if (currentFiber.effectTag === UPDATE) {
     // 更新节点
     if (currentFiber.type === ELEMENT_TEXT) {
+      // 拿老节点的文本节点和新节点的文本节点做比较，如有不同则更新
       if (currentFiber.alternate?.props?.text !== currentFiber.props?.text) {
         currentFiber.stateNode!.textContent = currentFiber.props!.text!;
       }
