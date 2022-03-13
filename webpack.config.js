@@ -48,7 +48,7 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loaders: [
+        use: [
           'file-loader?hash=sha512&digest=hex&name=images/[hash].[ext]',
           'image-webpack-loader?bypassOnDebug&optipng.optimizationLevel=7&gifsicle.interlaced=false',
         ],
@@ -96,7 +96,6 @@ module.exports = {
     }),
   ],
   devServer: {
-    contentBase: resolve(__dirname, 'dist'),
     compress: true,
     port: 8080,
     open: true,
