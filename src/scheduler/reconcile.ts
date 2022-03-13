@@ -15,6 +15,7 @@ import {
   Props,
   TAG_FUNCTION_COMPONENT_TYPE,
   TAG_CLASS_TYPE,
+  TAG_ROOT_TYPE,
 } from '@/types';
 import { UpdateQueue } from '@/utils/updateQueue';
 import { setProps } from '@/utils/setProps';
@@ -37,7 +38,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
     oldFiber.firstEffect = oldFiber.lastEffect = oldFiber.nextEffect = null;
   }
   // 遍历我们子虚拟 DOM 元素数组，为每一个虚拟 DOM 创建子 Fiber
-  while (newChildIndex < newChildren.length) {
+  while (newChildIndex < newChildren.length || oldFiber) {
     // 取出虚拟 DOM 节点
     const newChild = newChildren[newChildIndex];
     // 新的 Fiber
@@ -45,6 +46,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
     const sameType = oldFiber && newChild && oldFiber.type === newChild.type;
 
     let tag:
+      | TAG_ROOT_TYPE
       | TAG_TEXT_TYPE
       | TAG_HOST_TYPE
       | TAG_FUNCTION_COMPONENT_TYPE
@@ -60,13 +62,13 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
     } else if (newChild && newChild.type == ELEMENT_TEXT) {
       tag = TAG_TEXT;
     } else if (newChild && typeof newChild.type === 'string') {
-      tag = TAG_HOST; //如果type是字符串，那么这是一个原生DOM节点div
+      tag = TAG_HOST; // 如果type是字符串，那么这是一个原生DOM节点div
     }
 
     if (sameType) {
       // 说明老 fiber 和新虚拟 DOM 类型一样，可以复用，更新即可
       if (oldFiber.alternate) {
-        //至少已经更新一次了
+        // 至少已经更新一次了
         newFiber = oldFiber.alternate;
         newFiber.props = newChild.props;
         newFiber.alternate = oldFiber;

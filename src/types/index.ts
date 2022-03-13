@@ -45,6 +45,7 @@ export interface Fiber {
     | TAG_ROOT_TYPE
     | TAG_HOST_TYPE
     | TAG_TEXT_TYPE
+    | TAG_CLASS_TYPE
     | TAG_FUNCTION_COMPONENT_TYPE;
   // fiber 遍历时用到的指针
   child?: Fiber | null;
