@@ -14,7 +14,7 @@
 
 // 测试二次更新
 import { Element1, Element2, Element3 } from './re-render/index';
-import ReactDOM from './schedule/reactDOM';
+import ReactDOM from '../src/react-dom';
 ReactDOM.render(Element1, document.getElementById('app')!);
 const btn1 = document.getElementById('btn1');
 const btn2 = document.getElementById('btn2');

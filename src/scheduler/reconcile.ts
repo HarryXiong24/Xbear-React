@@ -80,12 +80,12 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
           tag: oldFiber.tag,
           type: oldFiber.type,
           props: newChild.props, //一定要新的
-          stateNode: oldFiber.stateNode, //div还没有创建DOM元素
+          stateNode: oldFiber.stateNode, // div还没有创建DOM元素
           updateQueue: oldFiber.updateQueue || new UpdateQueue(),
-          return: currentFiber, //父Fiber returnFiber
-          alternate: oldFiber, //让新的fiber的alternate指向老的fiber
-          effectTag: UPDATE, //副作用标示，render会收集副作用 增加 删除 更新
-          nextEffect: null, //effect list也是一个单链表 顺序和完成顺序一样 节点可能会少
+          return: currentFiber, // 父Fiber returnFiber
+          alternate: oldFiber, // 让新的fiber的alternate指向老的fiber
+          effectTag: UPDATE, // 副作用标示，render会收集副作用 增加 删除 更新
+          nextEffect: null, // effect list也是一个单链表 顺序和完成顺序一样 节点可能会少
         };
       }
     } else {
@@ -103,6 +103,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
         };
       }
 
+      // 类型不一样，把老的删掉
       if (oldFiber) {
         oldFiber.effectTag = DELETION;
         deletions.push(oldFiber);
@@ -151,4 +152,15 @@ export function updateDOM(
   newProps: Props
 ) {
   setProps(stateNode, oldProps, newProps);
+}
+
+export function commitDeletion(
+  currentFiber: Fiber,
+  returnDom: HTMLElement | Text
+) {
+  if (currentFiber.tag == TAG_HOST || currentFiber.tag == TAG_TEXT) {
+    returnDom.removeChild(currentFiber.stateNode as Node);
+  } else {
+    commitDeletion(currentFiber.child!, returnDom);
+  }
 }

@@ -19,7 +19,7 @@ export const Element1: Fiber = (
 export const Element2: Fiber = (
   <div id="A1-new">
     A1-new
-    <div id="B1">
+    <div id="B1-new">
       B1-new
       <div id="C1-new">C1-new</div>
       <div id="C2-new">C2-new</div>
@@ -31,14 +31,14 @@ export const Element2: Fiber = (
 );
 
 export const Element3: Fiber = (
-  <div id="A1-new">
-    A1-new
-    <div id="B1">
-      B1-new
-      <div id="C1-new">C1-new-new</div>
+  <div id="A1-new2">
+    A1-new2
+    <div id="B1-new2">
+      B1-new2
+      <div id="C1-new2">C1-new2</div>
     </div>
-    <div id="B2-new">
-      <span>B2-new</span>
+    <div id="B2-new2">
+      <span>B2-new2</span>
     </div>
   </div>
 );

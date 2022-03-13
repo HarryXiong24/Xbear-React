@@ -8,7 +8,7 @@ import {
   UPDATE,
 } from '../constants';
 import { Fiber, Props } from '../types';
-import { updateDOM } from './reconcile';
+import { commitDeletion, updateDOM } from './reconcile';
 import { updateHost, updateHostRoot, updateHostText } from './update';
 
 /**
@@ -33,14 +33,30 @@ export let currentRoot: Fiber | null = null;
 export const deletions: Fiber[] = [];
 
 export function scheduleRoot(rootFiber: Fiber) {
-  // 说明已经渲染过一次了，此时就要拷贝一份为以后渲染做准备
-  if (currentRoot) {
-    rootFiber.alternate = currentRoot;
-    workInProgressRoot = rootFiber;
+  if (currentRoot && currentRoot.alternate) {
+    // 这就是第二次之后渲染，不能每次都创建树，如起始时可以把第一个树赋给第三个
+    workInProgressRoot = currentRoot.alternate;
+    // 他的替身指向当前树
+    workInProgressRoot.alternate = currentRoot;
+    if (rootFiber) {
+      // 让他的props更新成新的props
+      workInProgressRoot.props = rootFiber.props;
+    }
+  } else if (currentRoot) {
+    // 说明已经渲染过一次了，此时就要拷贝一份为以后渲染做准备
+    if (rootFiber) {
+      rootFiber.alternate = currentRoot;
+      workInProgressRoot = rootFiber;
+    } else {
+      workInProgressRoot = {
+        ...currentRoot,
+        alternate: currentRoot,
+      };
+    }
   } else {
     workInProgressRoot = rootFiber;
   }
-  nextUnitOfWork = rootFiber;
+  nextUnitOfWork = workInProgressRoot;
 }
 
 function performUnitOfWork(currentFiber: Fiber): Fiber | undefined {
@@ -126,8 +142,8 @@ function workLoop(IdleDeadline: any) {
     shouldYield = IdleDeadline.timeRemaining() < 1;
   }
   if (!nextUnitOfWork && workInProgressRoot) {
-    console.log('render 阶段结束');
     commitRoot();
+    console.log('render 阶段结束');
   }
   // 每一帧都要执行这个代码
   window.requestIdleCallback(workLoop, { timeout: 500 });
@@ -162,7 +178,7 @@ function commitWork(currentFiber: Fiber) {
     returnDom!.appendChild(currentFiber.stateNode as Node);
   } else if (currentFiber.effectTag === DELETION) {
     // 删除节点
-    returnDom!.removeChild(currentFiber.stateNode as Node);
+    return commitDeletion(currentFiber, returnDom!);
   } else if (currentFiber.effectTag === UPDATE) {
     // 更新节点
     if (currentFiber.type === ELEMENT_TEXT) {
