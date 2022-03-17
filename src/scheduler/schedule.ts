@@ -54,8 +54,14 @@ export function scheduleRoot(rootFiber: Fiber) {
       };
     }
   } else {
+    // 第一次渲染
     workInProgressRoot = rootFiber;
   }
+  // 清空指针
+  workInProgressRoot.firstEffect =
+    workInProgressRoot.lastEffect =
+    workInProgressRoot.nextEffect =
+      null;
   nextUnitOfWork = workInProgressRoot;
 }
 

@@ -73,7 +73,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
         newFiber.props = newChild.props;
         newFiber.alternate = oldFiber;
         newFiber.effectTag = UPDATE;
-        newFiber.updateQueue = oldFiber.updateQueue || new UpdateQueue();
+        // newFiber.updateQueue = oldFiber.updateQueue || new UpdateQueue();
         newFiber.nextEffect = null;
       } else {
         newFiber = {
@@ -81,7 +81,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
           type: oldFiber.type,
           props: newChild.props, //一定要新的
           stateNode: oldFiber.stateNode, // div还没有创建DOM元素
-          updateQueue: oldFiber.updateQueue || new UpdateQueue(),
+          // updateQueue: oldFiber.updateQueue || new UpdateQueue(),
           return: currentFiber, // 父Fiber returnFiber
           alternate: oldFiber, // 让新的fiber的alternate指向老的fiber
           effectTag: UPDATE, // 副作用标示，render会收集副作用 增加 删除 更新
@@ -89,6 +89,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
         };
       }
     } else {
+      // 和老 Fiber 不一样，走新建
       // 看看新的 DOM 节点可有 child（有可能是null）
       if (newChild) {
         newFiber = {
@@ -97,7 +98,7 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
           props: newChild.props,
           stateNode: null, // div还没有创建DOM元素
           return: currentFiber, // 父Fiber returnFiber
-          updateQueue: new UpdateQueue(),
+          // updateQueue: new UpdateQueue(),
           effectTag: PLACEMENT, // 副作用标示，render 会收集副作用 增加 删除 更新
           nextEffect: null, // effect list也是一个单链表 顺序和完成顺序一样 节点可能会少
         };
@@ -158,7 +159,7 @@ export function commitDeletion(
   currentFiber: Fiber,
   returnDom: HTMLElement | Text
 ) {
-  if (currentFiber.tag == TAG_HOST || currentFiber.tag == TAG_TEXT) {
+  if (currentFiber.tag === TAG_HOST || currentFiber.tag == TAG_TEXT) {
     returnDom.removeChild(currentFiber.stateNode as Node);
   } else {
     commitDeletion(currentFiber.child!, returnDom);
