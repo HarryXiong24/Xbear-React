@@ -1,4 +1,5 @@
 import { ELEMENT_TEXT } from './constants';
+import { Update, UpdateQueue } from './utils/updateQueue';
 
 /**
  * 创建元素（虚拟DOM）的方法
@@ -39,6 +40,24 @@ function createElement(
     },
   };
 }
+
+class Component {
+  public props: any;
+  public isReactComponent: Record<string, any>;
+  public updateQueue: UpdateQueue;
+
+  constructor(props) {
+    this.props = props;
+    this.isReactComponent = {};
+    this.updateQueue = new UpdateQueue();
+  }
+  setState(payload: Record<string, any> | ((args: [...any]) => any)) {
+    const update = new Update(payload);
+  }
+}
+
+// 标识类组件
+Component.prototype.isReactComponent = {};
 
 export const React = {
   createElement,

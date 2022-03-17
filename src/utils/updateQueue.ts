@@ -5,14 +5,17 @@ export class Update {
   }
 }
 
-//数据结构是单链表 更新队列
+// 更新队列
+// 数据结构是单链表
 export class UpdateQueue {
   public firstUpdate;
   public lastUpdate;
+
   constructor() {
     this.firstUpdate = null;
     this.lastUpdate = null;
   }
+  // 入队
   enqueueUpdate(update) {
     if (this.lastUpdate === null) {
       this.firstUpdate = this.lastUpdate = update;
@@ -21,6 +24,7 @@ export class UpdateQueue {
       this.lastUpdate = update;
     }
   }
+  // 使用列表更新状态
   forceUpdate(state) {
     let currentUpdate = this.firstUpdate;
     while (currentUpdate) {
