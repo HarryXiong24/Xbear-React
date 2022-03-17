@@ -26,17 +26,7 @@ export interface Props {
   [key: string]: any;
 }
 
-export interface Fiber {
-  /**
-   * 虚拟 dom 里的属性
-   */
-  // 绑定的真实节点
-  stateNode?: HTMLElement | Text | null;
-  // 是原生节点还是 react 节点
-  type?: string | ELEMENT_TEXT_TYPE;
-  // 该节点下的属性，children
-  props?: Props | null;
-
+export interface Fiber extends VirtualDom {
   /**
    * Fiber 里的属性
    */
@@ -58,4 +48,16 @@ export interface Fiber {
   lastEffect?: Fiber | null;
   alternate?: Fiber | null;
   updateQueue?: any;
+}
+
+export interface VirtualDom {
+  /**
+   * 虚拟 dom 里的属性
+   */
+  // 绑定的真实节点
+  stateNode?: HTMLElement | Text | null;
+  // 是原生节点还是 react 节点
+  type?: string | ELEMENT_TEXT_TYPE;
+  // 该节点下的属性，children
+  props?: Props | null;
 }
