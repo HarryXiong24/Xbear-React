@@ -42,18 +42,23 @@ function createElement(
   };
 }
 
-export class Component {
-  public props: unknown;
+export abstract class Component {
+  public props: any;
   public isReactComponent: Record<string, any>;
   public updateQueue: UpdateQueue;
   public internalFiber: Fiber | null;
+  public state: Record<string, any>;
 
-  constructor(props: unknown) {
+  constructor(props: Record<string, any>) {
     this.props = props;
     this.isReactComponent = {};
     this.updateQueue = new UpdateQueue();
     this.internalFiber = null;
+    this.state = {};
   }
+
+  abstract render(): HTMLElement;
+
   setState(payload: Record<string, any> | ((...args: any[]) => any)) {
     const update = new Update(payload);
     this.internalFiber!.updateQueue.enqueueUpdate(update);

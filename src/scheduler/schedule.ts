@@ -11,7 +11,12 @@ import {
 } from '../constants';
 import { Fiber, Props } from '../types';
 import { commitDeletion, updateDOM } from './reconcile';
-import { updateHost, updateHostRoot, updateHostText } from './update';
+import {
+  updateClassComponent,
+  updateHost,
+  updateHostRoot,
+  updateHostText,
+} from './update';
 
 /**
  * 从根节点开始渲染和调度
@@ -105,9 +110,10 @@ function beginWork(currentFiber: Fiber) {
     updateHost(currentFiber);
   } else if (currentFiber.tag === TAG_CLASS) {
     updateClassComponent(currentFiber);
-  } else if (currentFiber.tag === TAG_FUNCTION_COMPONENT) {
-    updateFunctionComponent(currentFiber);
   }
+  // } else if (currentFiber.tag === TAG_FUNCTION_COMPONENT) {
+  //   updateFunctionComponent(currentFiber);
+  // }
 }
 
 /**
@@ -182,21 +188,36 @@ function commitWork(currentFiber: Fiber) {
   if (!currentFiber) {
     return;
   }
-  const returnFiber = currentFiber.return;
+  let returnFiber = currentFiber.return;
+  while (
+    returnFiber!.tag !== TAG_HOST &&
+    returnFiber!.tag !== TAG_ROOT &&
+    returnFiber!.tag !== TAG_TEXT
+  ) {
+    returnFiber = returnFiber!.return;
+  }
   const returnDom = returnFiber!.stateNode;
   console.log(currentFiber);
   if (currentFiber.effectTag === PLACEMENT) {
-    // 新增节点
-    returnDom!.appendChild(currentFiber.stateNode as Node);
+    let nextFiber = currentFiber;
+    if (nextFiber.tag === TAG_CLASS) {
+      return;
+    }
+    // 如果要挂载的节点不是 dom 节点，比如说是类组件 fiber，一直找第一个儿子，直到找到真实DOM
+    while (nextFiber.tag !== TAG_HOST && nextFiber.tag !== TAG_TEXT) {
+      nextFiber = currentFiber.child as Fiber;
+    }
+    (returnDom as HTMLElement | Text).appendChild(nextFiber.stateNode as Node);
   } else if (currentFiber.effectTag === DELETION) {
     // 删除节点
-    return commitDeletion(currentFiber, returnDom!);
+    return commitDeletion(currentFiber, returnDom! as HTMLElement | Text);
   } else if (currentFiber.effectTag === UPDATE) {
     // 更新节点
     if (currentFiber.type === ELEMENT_TEXT) {
       // 拿老节点的文本节点和新节点的文本节点做比较，如有不同则更新
       if (currentFiber.alternate?.props?.text !== currentFiber.props?.text) {
-        currentFiber.stateNode!.textContent = currentFiber.props!.text!;
+        (currentFiber.stateNode! as Text).textContent =
+          currentFiber.props!.text!;
       }
     } else {
       updateDOM(

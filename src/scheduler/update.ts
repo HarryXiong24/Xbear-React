@@ -34,18 +34,21 @@ function eval_pro(str: string, props: string): Component {
 export function updateClassComponent(currentFiber: Fiber) {
   // 类组件 stateNode 是组件的实例
   if (!currentFiber.stateNode) {
-    // new ClassCounter(); 类组件 fiber 双向指向
+    // 组件 fiber 双向指向, new ClassCounter(); 类
     const className = currentFiber.type as string;
     currentFiber.stateNode = eval_pro(className, 'currentFiber.props');
     console.log(currentFiber.stateNode);
     currentFiber.stateNode.internalFiber = currentFiber;
-    currentFiber.updateQueue = new UpdateQueue(); // 更新队列
+    // 初始化更新队列
+    currentFiber.updateQueue = new UpdateQueue();
   }
 
-  // 给组件的实例state赋值
+  // 给组件的实例 state 赋值
   (currentFiber.stateNode as Component).state =
-    currentFiber.updateQueue.forceUpdate(currentFiber.stateNode.state);
-  const newElement = currentFiber.stateNode.render();
-  const newChildren = [newElement];
+    currentFiber.updateQueue.forceUpdate(
+      (currentFiber.stateNode as Component).state
+    );
+  const newElement = (currentFiber.stateNode as Component).render();
+  const newChildren = [newElement as unknown as Fiber];
   reconcileChildren(currentFiber, newChildren);
 }
