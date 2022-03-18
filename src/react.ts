@@ -1,4 +1,5 @@
 import { ELEMENT_TEXT } from './constants';
+import { Fiber } from './types';
 import { Update, UpdateQueue } from './utils/updateQueue';
 
 /**
@@ -41,18 +42,23 @@ function createElement(
   };
 }
 
-class Component {
-  public props: any;
+export class Component {
+  public props: unknown;
   public isReactComponent: Record<string, any>;
   public updateQueue: UpdateQueue;
+  public internalFiber: Fiber | null;
 
-  constructor(props) {
+  constructor(props: unknown) {
     this.props = props;
     this.isReactComponent = {};
     this.updateQueue = new UpdateQueue();
+    this.internalFiber = null;
   }
-  setState(payload: Record<string, any> | ((args: [...any]) => any)) {
+  setState(payload: Record<string, any> | ((...args: any[]) => any)) {
     const update = new Update(payload);
+    this.internalFiber!.updateQueue.enqueueUpdate(update);
+    // 从根节点开始调度
+    scheduleRoot();
   }
 }
 
@@ -61,6 +67,7 @@ Component.prototype.isReactComponent = {};
 
 export const React = {
   createElement,
+  Component,
 };
 
 export default React;

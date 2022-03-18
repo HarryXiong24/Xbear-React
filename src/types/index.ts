@@ -1,3 +1,4 @@
+import { Component } from '@/react';
 import {
   ELEMENT_TEXT,
   TAG_ROOT,
@@ -55,7 +56,7 @@ export interface VirtualDom {
    * 虚拟 dom 里的属性
    */
   // 绑定的真实节点
-  stateNode?: HTMLElement | Text | null;
+  stateNode?: HTMLElement | Text | Component | null;
   // 是原生节点还是 react 节点
   type?: string | ELEMENT_TEXT_TYPE;
   // 该节点下的属性，children

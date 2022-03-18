@@ -2,6 +2,8 @@ import {
   DELETION,
   ELEMENT_TEXT,
   PLACEMENT,
+  TAG_CLASS,
+  TAG_FUNCTION_COMPONENT,
   TAG_HOST,
   TAG_ROOT,
   TAG_TEXT,
@@ -101,6 +103,10 @@ function beginWork(currentFiber: Fiber) {
   } else if (currentFiber.tag === TAG_HOST) {
     // 如果是原生非文本 Fiber
     updateHost(currentFiber);
+  } else if (currentFiber.tag === TAG_CLASS) {
+    updateClassComponent(currentFiber);
+  } else if (currentFiber.tag === TAG_FUNCTION_COMPONENT) {
+    updateFunctionComponent(currentFiber);
   }
 }
 
