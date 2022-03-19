@@ -147,12 +147,10 @@ export function createDom(currentFiber: Fiber) {
   }
 }
 
-export function updateDOM(
-  stateNode: HTMLElement,
-  oldProps: Props,
-  newProps: Props
-) {
-  setProps(stateNode, oldProps, newProps);
+export function updateDOM(stateNode: any, oldProps: Props, newProps: Props) {
+  if (stateNode && stateNode.setAttribute) {
+    setProps(stateNode, oldProps, newProps);
+  }
 }
 
 export function commitDeletion(

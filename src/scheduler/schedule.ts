@@ -13,6 +13,7 @@ import { Fiber, Props } from '../types';
 import { commitDeletion, updateDOM } from './reconcile';
 import {
   updateClassComponent,
+  updateFunctionComponent,
   updateHost,
   updateHostRoot,
   updateHostText,
@@ -39,14 +40,15 @@ export let currentRoot: Fiber | null = null;
 // 删除的节点不放在 effect list 要单独记录并执行
 export const deletions: Fiber[] = [];
 
-export function scheduleRoot(rootFiber: Fiber) {
+export function scheduleRoot(rootFiber?: Fiber) {
   if (currentRoot && currentRoot.alternate) {
     // 这就是第二次之后渲染，不能每次都创建树，如起始时可以把第一个树赋给第三个
     workInProgressRoot = currentRoot.alternate;
     // 他的替身指向当前树
     workInProgressRoot.alternate = currentRoot;
+    // 类组件创建的时候，可以没有 rootFiber
     if (rootFiber) {
-      // 让他的props更新成新的props
+      // 让他的 props 更新成新的 props
       workInProgressRoot.props = rootFiber.props;
     }
   } else if (currentRoot) {
@@ -62,7 +64,7 @@ export function scheduleRoot(rootFiber: Fiber) {
     }
   } else {
     // 第一次渲染
-    workInProgressRoot = rootFiber;
+    workInProgressRoot = rootFiber!;
   }
   // 清空指针
   workInProgressRoot.firstEffect =
@@ -110,10 +112,9 @@ function beginWork(currentFiber: Fiber) {
     updateHost(currentFiber);
   } else if (currentFiber.tag === TAG_CLASS) {
     updateClassComponent(currentFiber);
+  } else if (currentFiber.tag === TAG_FUNCTION_COMPONENT) {
+    updateFunctionComponent(currentFiber);
   }
-  // } else if (currentFiber.tag === TAG_FUNCTION_COMPONENT) {
-  //   updateFunctionComponent(currentFiber);
-  // }
 }
 
 /**

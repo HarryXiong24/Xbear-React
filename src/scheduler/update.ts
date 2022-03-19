@@ -25,18 +25,13 @@ export function updateHost(currentFiber: Fiber) {
   reconcileChildren(currentFiber, newChildren!);
 }
 
-function eval_pro(str: string, props: string): Component {
-  const template = `new ${str}(${props})`;
-  const Fn = Function;
-  return new Fn('return ' + template)();
-}
-
 export function updateClassComponent(currentFiber: Fiber) {
   // 类组件 stateNode 是组件的实例
   if (!currentFiber.stateNode) {
     // 组件 fiber 双向指向, new ClassCounter(); 类
-    const className = currentFiber.type as string;
-    currentFiber.stateNode = eval_pro(className, 'currentFiber.props');
+    currentFiber.stateNode = new (currentFiber.type as any)(
+      currentFiber.props
+    ) as Component;
     console.log(currentFiber.stateNode);
     currentFiber.stateNode.internalFiber = currentFiber;
     // 初始化更新队列
@@ -50,5 +45,13 @@ export function updateClassComponent(currentFiber: Fiber) {
     );
   const newElement = (currentFiber.stateNode as Component).render();
   const newChildren = [newElement as unknown as Fiber];
+  reconcileChildren(currentFiber, newChildren);
+}
+
+export function updateFunctionComponent(currentFiber: Fiber) {
+  workInProgressFiber = currentFiber;
+  hookIndex = 0;
+  workInProgressFiber.hooks = [];
+  const newChildren = [(currentFiber.type as any)(currentFiber.props)];
   reconcileChildren(currentFiber, newChildren);
 }

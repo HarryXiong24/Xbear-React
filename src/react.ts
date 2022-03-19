@@ -1,4 +1,5 @@
 import { ELEMENT_TEXT } from './constants';
+import { scheduleRoot } from './scheduler/schedule';
 import { Fiber } from './types';
 import { Update, UpdateQueue } from './utils/updateQueue';
 
