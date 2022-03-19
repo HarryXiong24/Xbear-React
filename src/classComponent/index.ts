@@ -50,3 +50,6 @@ export abstract class Component {
     scheduleRoot();
   }
 }
+
+// 标识类组件
+Component.prototype.isReactComponent = {};

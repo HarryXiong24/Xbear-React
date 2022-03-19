@@ -57,8 +57,10 @@ export function reconcileChildren(currentFiber: Fiber, newChildren: Fiber[]) {
       (newChild.type as any).prototype.isReactComponent
     ) {
       tag = TAG_CLASS;
+      console.log('class tag', tag);
     } else if (newChild && typeof newChild.type == 'function') {
       tag = TAG_FUNCTION_COMPONENT;
+      console.log('func tag', tag);
     } else if (newChild && newChild.type == ELEMENT_TEXT) {
       tag = TAG_TEXT;
     } else if (newChild && typeof newChild.type === 'string') {

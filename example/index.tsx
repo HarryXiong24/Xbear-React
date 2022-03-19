@@ -27,11 +27,6 @@
 
 import ReactDOM from '@/react-dom';
 import React from '@/react';
-import ClassCounter from './Component/class';
-import FunctionCounter from './Component/function';
+import App from './Component/app';
 
-ReactDOM.render(<ClassCounter />, document.getElementById('class-component')!);
-ReactDOM.render(
-  <FunctionCounter />,
-  document.getElementById('function-component')!
-);
+ReactDOM.render(<App />, document.getElementById('app')!);

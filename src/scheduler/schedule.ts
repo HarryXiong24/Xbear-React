@@ -1,3 +1,4 @@
+import { updateClassComponent } from '@/classComponent';
 import { updateFunctionComponent } from '@/hooks/useReducer';
 import {
   DELETION,
@@ -12,12 +13,7 @@ import {
 } from '../constants';
 import { Fiber, Props } from '../types';
 import { commitDeletion, updateDOM } from './reconcile';
-import {
-  updateClassComponent,
-  updateHost,
-  updateHostRoot,
-  updateHostText,
-} from './update';
+import { updateHost, updateHostRoot, updateHostText } from './update';
 
 /**
  * 从根节点开始渲染和调度

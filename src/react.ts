@@ -43,9 +43,6 @@ function createElement(
   };
 }
 
-// 标识类组件
-Component.prototype.isReactComponent = {};
-
 export const React = {
   createElement,
   Component,
