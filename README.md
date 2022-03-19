@@ -2,7 +2,7 @@
 
 ## Description
 
-A template for quickly developing projects with Typescript and Webpack.
+A project implements mini React by using Typescript.
 
 ## Usage
 
