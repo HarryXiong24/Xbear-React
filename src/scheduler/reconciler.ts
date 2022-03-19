@@ -19,7 +19,7 @@ import {
 } from '@/types';
 import { UpdateQueue } from '@/utils/updateQueue';
 import { setProps } from '@/utils/setProps';
-import { deletions } from './schedule';
+import { deletions } from './scheduler';
 
 /**
  * 将 children 初始化成 Fiber

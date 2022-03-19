@@ -1,5 +1,5 @@
-import { reconcileChildren } from '@/scheduler/reconcile';
-import { scheduleRoot } from '@/scheduler/schedule';
+import { reconcileChildren } from '@/scheduler/reconciler';
+import { scheduleRoot } from '@/scheduler/scheduler';
 import { Fiber } from '@/types';
 import { Update, UpdateQueue } from '@/utils/updateQueue';
 

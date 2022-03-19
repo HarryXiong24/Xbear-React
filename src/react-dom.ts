@@ -1,5 +1,5 @@
 import { TAG_ROOT } from './constants';
-import { scheduleRoot } from './scheduler/schedule';
+import { scheduleRoot } from './scheduler/scheduler';
 import { Fiber } from './types';
 /**
  * render 是要把一个元素渲染到一个容器内部

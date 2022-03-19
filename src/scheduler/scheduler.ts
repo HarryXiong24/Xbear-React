@@ -12,8 +12,8 @@ import {
   UPDATE,
 } from '../constants';
 import { Fiber, Props } from '../types';
-import { commitDeletion, updateDOM } from './reconcile';
-import { updateHost, updateHostRoot, updateHostText } from './update';
+import { commitDeletion, updateDOM } from './reconciler';
+import { updateHost, updateHostRoot, updateHostText } from './updater';
 
 /**
  * 从根节点开始渲染和调度

@@ -1,5 +1,5 @@
 import { Fiber } from '@/types';
-import { createDom, reconcileChildren } from './reconcile';
+import { createDom, reconcileChildren } from './reconciler';
 
 // 将根 fiber 里的 children 创建出子 fiber
 export function updateHostRoot(currentFiber: Fiber) {
