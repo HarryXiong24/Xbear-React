@@ -1,7 +1,7 @@
+import { Component } from './classComponent';
 import { ELEMENT_TEXT } from './constants';
-import { scheduleRoot } from './scheduler/schedule';
-import { Fiber } from './types';
-import { Update, UpdateQueue } from './utils/updateQueue';
+import { useReducer } from './hooks/useReducer';
+import { useState } from './hooks/useState';
 
 /**
  * 创建元素（虚拟DOM）的方法
@@ -43,37 +43,18 @@ function createElement(
   };
 }
 
-export abstract class Component {
-  public props: any;
-  public isReactComponent: Record<string, any>;
-  public updateQueue: UpdateQueue;
-  public internalFiber: Fiber | null;
-  public state: Record<string, any>;
-
-  constructor(props: Record<string, any>) {
-    this.props = props;
-    this.isReactComponent = {};
-    this.updateQueue = new UpdateQueue();
-    this.internalFiber = null;
-    this.state = {};
-  }
-
-  abstract render(): HTMLElement;
-
-  setState(payload: Record<string, any> | ((...args: any[]) => any)) {
-    const update = new Update(payload);
-    this.internalFiber!.updateQueue.enqueueUpdate(update);
-    // 从根节点开始调度
-    scheduleRoot();
-  }
-}
-
 // 标识类组件
 Component.prototype.isReactComponent = {};
 
 export const React = {
   createElement,
   Component,
+  useReducer,
+  useState,
 };
+
+export { useState } from './hooks/useState';
+export { useReducer } from './hooks/useReducer';
+export { Component } from './classComponent';
 
 export default React;

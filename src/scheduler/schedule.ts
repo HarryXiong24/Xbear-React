@@ -1,3 +1,4 @@
+import { updateFunctionComponent } from '@/hooks/useReducer';
 import {
   DELETION,
   ELEMENT_TEXT,
@@ -13,7 +14,6 @@ import { Fiber, Props } from '../types';
 import { commitDeletion, updateDOM } from './reconcile';
 import {
   updateClassComponent,
-  updateFunctionComponent,
   updateHost,
   updateHostRoot,
   updateHostText,

@@ -49,6 +49,7 @@ export interface Fiber extends VirtualDom {
   lastEffect?: Fiber | null;
   alternate?: Fiber | null;
   updateQueue?: any;
+  hooks?: any[];
 }
 
 export interface VirtualDom {

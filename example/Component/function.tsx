@@ -1,19 +1,17 @@
-import React from '@/react';
-
-const ADD = 'ADD';
+import React, { useReducer, useState } from '@/react';
 
 export function reducer(state, action) {
   switch (action.type) {
-    case ADD:
+    case 'ADD':
       return { count: (state.count as number) + 1 };
     default:
       return state;
   }
 }
 
-export function FunctionCounter() {
-  const [numberState, setNumberState] = React.useState({ number: 0 });
-  const [countState, dispatch] = React.useReducer(reducer, { count: 0 });
+export default function FunctionCounter() {
+  const [numberState, setNumberState] = useState({ number: 0 });
+  const [countState, dispatch] = useReducer(reducer, { count: 0 });
   return (
     <div>
       <div id="counter1">
@@ -28,7 +26,7 @@ export function FunctionCounter() {
       </div>
       <div id="counter2">
         <span>{countState.count}</span>
-        <button onClick={() => dispatch({ type: ADD })}>加1</button>
+        <button onClick={() => dispatch({ type: 'ADD' })}>加1</button>
       </div>
     </div>
   );

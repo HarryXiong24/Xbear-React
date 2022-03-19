@@ -47,11 +47,3 @@ export function updateClassComponent(currentFiber: Fiber) {
   const newChildren = [newElement as unknown as Fiber];
   reconcileChildren(currentFiber, newChildren);
 }
-
-export function updateFunctionComponent(currentFiber: Fiber) {
-  workInProgressFiber = currentFiber;
-  hookIndex = 0;
-  workInProgressFiber.hooks = [];
-  const newChildren = [(currentFiber.type as any)(currentFiber.props)];
-  reconcileChildren(currentFiber, newChildren);
-}
