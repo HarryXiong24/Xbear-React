@@ -9,7 +9,6 @@ A project implements mini React by using Typescript.
 ```bash
 # Clone it from Github.
 $ git clone https://github.com/HarryXiong24/Xbear-React.git
-$ cd typescript-webpack-start
 ```
 
 ```bash
