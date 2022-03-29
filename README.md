@@ -2,7 +2,7 @@
 
 ## Description
 
-A project implements mini React by using Typescript.
+A project imitated mini React by using Typescript.
 
 ## Usage
 
