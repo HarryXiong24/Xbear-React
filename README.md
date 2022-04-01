@@ -27,4 +27,4 @@ npm run build
 
 ### Hint
 
-The simple example is located in the examples folder, so the packaging file entry set by Webpack is located in index.ts under the examples folder.
+The simple example is located in the example folder, so the packaging file entry set by Webpack is located in index.ts under the example folder.
