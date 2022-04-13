@@ -207,7 +207,7 @@ function commitWork(currentFiber: Fiber) {
     (returnDom as HTMLElement | Text).appendChild(nextFiber.stateNode as Node);
   } else if (currentFiber.effectTag === DELETION) {
     // 删除节点
-    return commitDeletion(currentFiber, returnDom! as HTMLElement | Text);
+    return commitDeletion(currentFiber, returnDom as HTMLElement | Text);
   } else if (currentFiber.effectTag === UPDATE) {
     // 更新节点
     if (currentFiber.type === ELEMENT_TEXT) {

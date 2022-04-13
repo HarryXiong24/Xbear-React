@@ -13,7 +13,7 @@ $ git clone https://github.com/HarryXiong24/Xbear-React.git
 
 ```bash
 # If you want to use yarn.
-yarn 
+yarn
 yarn dev
 yarn build
 ```
